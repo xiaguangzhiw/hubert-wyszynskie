@@ -1,24 +1,17 @@
 tell application "Notes"
 	if folder "Test folder" exists then
-		set counter to 1
-		set output to ""
+		set notesList to ""
 		repeat with aNote in notes in folder "Test folder"
-			set noteText to (creation date of aNote as string) & "\n"
-			set noteText to noteText & (modification date of aNote as string) & "\n"
-			set noteText to noteText & (name of aNote as string) & "\n"
-			set noteText to noteText & (body of aNote as string) & "\n"
+			set currentNote to (name of aNote as string)
+      set currentNote to currentNote & "--*/inside-note-separator/*--"
+			set currentNote to currentNote & (body of aNote as string)
 			
-			tell application "TextEdit"
-				activate
-				make new document
-				set oldText to text of document 1
-				set text of document 1 to oldText & noteText
-
-				close document 1 saving in POSIX file ("/Users/hubertwyszynski/Desktop/Projects/Python/mac-notes-to-g-keep/applescript-output/" & "note-" & counter & ".txt")
-			end tell
-			set counter to counter + 1
+			set notesList to notesList & currentNote
+      set notesList to notesList & "--*/notes-separator/*--"
 		end repeat
+		
+		log notesList
 	else
-		display dialog "No such folder!"
+		error "Folder not found"
 	end if
 end tell
